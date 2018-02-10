@@ -1,0 +1,54 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+
+    signingConfigs {
+        anyConfig {
+
+            //加载资源
+            Properties properties = new Properties()
+            InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream() ;
+            properties.load(inputStream)
+
+
+            //读取字段
+            def wb_keyAlias = properties.getProperty( 'keyAlias' )
+            def wb_keyPassword = properties.getProperty( 'keyPassword' ) ;
+            def wb_storePassword = properties.getProperty( 'storePassword' ) ;
+
+            keyAlias wb_keyAlias
+            keyPassword wb_keyPassword
+            storeFile file('../anykey.jks')
+            storePassword wb_storePassword
+        }
+    }
+
+    defaultConfig {
+        applicationId "any.com.webview"
+        minSdkVersion 21
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug{
+            signingConfig signingConfigs.anyConfig
+            minifyEnabled false
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+}
